@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     addField(["website", "websiteUrl"], websiteUrl)
     addField(["company_category", "companyType", "0-2/company_category"], companyType)
     addField(["number_of_outlets", "numOutlets", "0-2/number_of_outlets"], normalizedOutlets)
-    addField(["products_of_interest", "productsOfInterest"], productsOfInterest.join("; "))
+    addField(["products_of_interest", "productsOfInterest", "0-2/products_of_interest"], productsOfInterest.join("; "))
     addField(["subject"], subject || "GoGMGo Demo Request")
     addField(["content", "message"], message)
 
