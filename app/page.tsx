@@ -1,65 +1,179 @@
-import Image from "next/image";
+import type { Metadata } from "next"
+import { getSiteSettings } from "@/lib/settings"
+import { Navbar } from "@/components/sections/Navbar"
+import { Hero } from "@/components/sections/Hero"
+import { CafeEntrance } from "@/components/sections/CafeEntrance"
+import { StepInside } from "@/components/sections/StepInside"
+import { KitchenPassage } from "@/components/sections/KitchenPassage"
+import { SecretSauce } from "@/components/sections/SecretSauce"
+import { ServicePassage } from "@/components/sections/ServicePassage"
+import { Prep } from "@/components/sections/Prep"
+import { CounterPassage } from "@/components/sections/CounterPassage"
+import { FourHands } from "@/components/sections/FourHands"
+import { PricingPassage } from "@/components/sections/PricingPassage"
+import { Pricing } from "@/components/sections/Pricing"
+import { Footer } from "@/components/sections/Footer"
 
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteSettings()
+  const BASE_URL = process.env.NEXTAUTH_URL ?? "https://gogmgo.com"
+  return {
+    title: s.defaultSeoTitle,
+    description: s.defaultSeoDescription,
+    alternates: { canonical: BASE_URL },
+    openGraph: {
+      title: s.defaultSeoTitle,
+      description: s.defaultSeoDescription,
+      url: BASE_URL,
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "GoGMGo — Restaurant Operating System for Modern F&B" }],
+    },
+  }
+}
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://gogmgo.com/#software",
+  "name": "GoGMGo",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "Restaurant Management Software",
+  "operatingSystem": "iOS, Web, iPad",
+  "url": "https://gogmgo.com",
+  "publisher": { "@id": "https://gogmgo.com/#organization" },
+  "description": "GoGMGo is a cloud-based restaurant operating system for modern F&B operators, integrating point-of-sale (POS), kitchen management, HR and staff scheduling, procurement, analytics, and online ordering in one connected platform.",
+  "featureList": [
+    "Restaurant Point of Sale (POS)",
+    "iPad POS for restaurants and cafés",
+    "Kitchen Display System (KDS)",
+    "Customer Display System (CDS)",
+    "Online Ordering and QR table ordering",
+    "Staff scheduling and HR management",
+    "Payroll management for restaurants",
+    "Recipe costing and kitchen management",
+    "Inventory and procurement management",
+    "Restaurant analytics and reporting",
+    "Delivery platform integration (GrabFood, Foodpanda)",
+    "Loyalty platform integration (Eber, Como, Ascentis)",
+    "Reservation system integration (SevenRooms, inline, BistroChat)",
+    "Payment processing (Stripe, Pine Labs, Red Dot Payments)",
+    "Multi-outlet restaurant management",
+    "Self-service kiosk ordering",
+  ],
+  "offers": {
+    "@type": "AggregateOffer",
+    "lowPrice": "119",
+    "highPrice": "219",
+    "priceCurrency": "SGD",
+    "priceSpecification": {
+      "@type": "UnitPriceSpecification",
+      "price": "119",
+      "priceCurrency": "SGD",
+      "unitText": "per outlet per month",
+    },
+    "offerCount": 3,
+  },
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Restaurant operators, F&B businesses, café owners, hospitality groups",
+    "geographicArea": { "@type": "Place", "name": "Singapore and Southeast Asia" },
+  },
+}
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is GoGMGo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GoGMGo is a restaurant operating system that combines point-of-sale (POS), kitchen management, HR and staff scheduling, procurement, analytics, and online ordering in one connected platform. It is designed for modern F&B operators — from standalone cafés and restaurants to multi-outlet hospitality groups.",
+      },
+    },
+    {
+      "@type": "Question",
+      "name": "Is GoGMGo available for restaurants in Singapore?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. GoGMGo integrates with Singapore's leading payment providers including Stripe, Pine Labs, and Red Dot Payments, and connects to delivery platforms such as GrabFood and Foodpanda. It is built for the Singapore F&B market.",
+      },
+    },
+    {
+      "@type": "Question",
+      "name": "What restaurant POS features does GoGMGo include?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GoGMGo's GoPOSGo module is an iPad-based restaurant POS system supporting order management, table management, payment processing, kitchen display systems (KDS), customer display systems (CDS), and real-time analytics. It supports both counter service and table service workflows.",
+      },
+    },
+    {
+      "@type": "Question",
+      "name": "Does GoGMGo support QR ordering and online ordering?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. GoGMGo's Ordrr module supports QR table ordering, online ordering for restaurants, and self-service kiosk workflows, available as an optional add-on.",
+      },
+    },
+    {
+      "@type": "Question",
+      "name": "What is the pricing for GoGMGo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GoGMGo pricing starts from SGD $119 per outlet per month (Starter), $169/month (Basic), and $219/month (Standard) for high-volume restaurant operations. There are no setup fees. Optional add-ons include Ordrr (online ordering), Screens, GoLinkGo (integrations), and Shared Ops for multi-outlet groups.",
+      },
+    },
+    {
+      "@type": "Question",
+      "name": "Can GoGMGo manage multiple restaurant outlets?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. GoGMGo's Shared Ops add-on provides a group HQ account with centralised approval workflows, data sharing, and consolidated reporting across multiple outlets.",
+      },
+    },
+    {
+      "@type": "Question",
+      "name": "Does GoGMGo include restaurant HR and staff scheduling?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. GoGMGo's GoHRGo module provides restaurant HR management including staff scheduling, payroll management, performance tracking, and employee self-service tools.",
+      },
+    },
+    {
+      "@type": "Question",
+      "name": "What delivery platforms does GoGMGo integrate with?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GoGMGo integrates with major delivery and aggregator platforms through its GoLinkGo integration module, including GrabFood, Foodpanda, and Lalamove, as well as loyalty platforms (Eber, Como, Ascentis) and reservation systems (SevenRooms, inline, BistroChat).",
+      },
+    },
+  ],
+}
+
+// Cinematic café journey:
+// Outside → Doorway threshold → Interior counter → Systems wall → Consultation → Pricing → Lounge
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      {/* ── Structured data — SoftwareApplication + FAQPage ── */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+
+      <main>
+        <Navbar />
+        <Hero />
+        <CafeEntrance />
+        <StepInside />
+        <KitchenPassage />
+        <SecretSauce />
+        <ServicePassage />
+        <Prep />
+        <CounterPassage />
+        <FourHands />
+        <PricingPassage />
+        <Pricing />
+        <Footer />
       </main>
-    </div>
-  );
+    </>
+  )
 }
