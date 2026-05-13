@@ -35,21 +35,36 @@ export async function POST(req: Request) {
 
   // ── HubSpot submission ────────────────────────────────────────────────────
   if (settings.hubspotPortalId && settings.hubspotFormId) {
+    const normalizedOutlets = numOutlets?.replace("–", "-")
+
+    const hsFields: Array<{ name: string; value: string }> = []
+    const seen = new Set<string>()
+
+    const addField = (names: string[], value?: string) => {
+      if (!value) return
+      for (const name of names) {
+        if (!name || seen.has(name)) continue
+        hsFields.push({ name, value })
+        seen.add(name)
+      }
+    }
+
+    // Send values under multiple compatible field names to match HubSpot internal naming.
+    addField(["firstname", "firstName"], firstName)
+    addField(["lastname", "lastName"], lastName)
+    addField(["email"], email)
+    addField(["phone"], phone)
+    addField(["company", "companyName"], companyName)
+    addField(["jobtitle", "jobTitle"], jobTitle)
+    addField(["website", "websiteUrl"], websiteUrl)
+    addField(["company_category", "companyType", "0-2/company_category"], companyType)
+    addField(["number_of_outlets", "numOutlets", "0-2/number_of_outlets"], normalizedOutlets)
+    addField(["products_of_interest", "productsOfInterest"], productsOfInterest.join("; "))
+    addField(["subject"], subject || "GoGMGo Demo Request")
+    addField(["content", "message"], message)
+
     const hsPayload = {
-      fields: [
-        { name: "email",        value: email },
-        { name: "firstname",    value: firstName },
-        { name: "lastname",     value: lastName },
-        { name: "phone",        value: phone },
-        { name: "company",      value: companyName },
-        { name: "jobtitle",     value: jobTitle },
-        { name: "website",      value: websiteUrl },
-        { name: "company_category", value: companyType },
-        { name: "number_of_outlets", value: numOutlets },
-        { name: "products_of_interest", value: productsOfInterest.join("; ") },
-        { name: "subject",      value: subject || "GoGMGo Demo Request" },
-        { name: "content",      value: message },
-      ].filter((f) => f.value),
+      fields: hsFields,
       context: {
         pageUri:  process.env.NEXTAUTH_URL ?? "https://gogmgo.com",
         pageName: "GoGMGo Demo Request",
