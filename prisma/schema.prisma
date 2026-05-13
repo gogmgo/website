@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model SiteSettings {
+  id                    String  @id @default(cuid())
+  siteName              String  @default("GoGMGo")
+  defaultSeoTitle       String  @default("GoGMGo — The Restaurant Operating System")
+  defaultSeoDescription String  @default("POS, procurement, HR, analytics and online ordering — one connected system.")
+  hubspotPortalId       String  @default("")
+  hubspotFormId         String  @default("")
+  hubspotTrackingScript String  @default("")
+  whatsappNumber        String  @default("")
+  supportEmail          String  @default("")
+  googleAnalyticsId     String  @default("")
+  googleTagManagerId    String  @default("")
+  metaPixelId           String  @default("")
+  clarityProjectId      String  @default("")
+}
+
+model LegalPage {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  content        String   @default("")
+  seoTitle       String   @default("")
+  seoDescription String   @default("")
+  updatedAt      DateTime @updatedAt
+}

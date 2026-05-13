@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/* Respect the user's OS reduced-motion preference for all CSS transitions/animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── CTA LED breathing glow ────────────────────────────────────────────────── */
+/* Multi-layer box-shadow: tight bright core + wide atmospheric halo.          */
+/* Reduced-motion override at top of file collapses this to 0.01ms instantly.  */
+@keyframes cta-led-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0  8px 1px rgba(0, 177, 174, 0.28),
+      0 0 16px 2px rgba(0, 177, 174, 0.10);
+  }
+  50% {
+    box-shadow:
+      0 0 16px 4px rgba(0, 177, 174, 0.58),
+      0 0 32px 8px rgba(0, 177, 174, 0.22),
+      0 0 56px 12px rgba(0, 177, 174, 0.07);
+  }
+}
+
+.cta-led {
+  animation: cta-led-breathe 2.8s ease-in-out infinite;
+}
+
+/* ── Secret Sauce: mobile station labels ──────────────────────────────────── */
+/* CSS px is absolute (not SVG-scaled). SVG fontSize="10.5" handles larger screens. */
+@media (max-width: 767px) {
+  .ss-station-label {
+    font-size: 14px;
+  }
+}
+
+/* Typography via next/font — inline to avoid double variable indirection */
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Brand palette — registered as CSS vars AND Tailwind utilities */
+@theme {
+  --color-void: #050505;
+  --color-charcoal: #10100e;
+  --color-warm-dark: #17130e;
+  --color-warm-white: #f4f1ea;
+  --color-muted: #b8b5ad;
+  --color-teal: #00b1ae;
+  --color-green: #b7d66d;
+  --color-deep-teal: #007b6f;
+  --color-brass: #c8a96a;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #050505;
+}
+
+body {
+  background-color: #050505;
+  color: #f4f1ea;
+  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(0, 175, 170, 0.2);
+  color: #f4f1ea;
+}
+
+/* ── Contact modal — form field overrides ──────────────────────────────────── */
+/* Placeholder colour */
+.gogmgo-field::placeholder {
+  color: rgba(184, 181, 173, 0.26);
+}
+/* Override browser autofill yellow/blue flash */
+.gogmgo-field:-webkit-autofill,
+.gogmgo-field:-webkit-autofill:hover,
+.gogmgo-field:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(14, 11, 8, 0.98) inset !important;
+  -webkit-text-fill-color: #f4f1ea !important;
+  caret-color: #f4f1ea;
+}
+/* Dark option backgrounds for selects */
+.gogmgo-field option {
+  background-color: #0d0a06;
+  color: #f4f1ea;
+}
+
+/* Cinematic scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(184, 181, 173, 0.2);
+  border-radius: 2px;
+}
+
+/* Legal prose */
+.legal-prose {
+  color: rgba(244, 241, 234, 0.72);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+.legal-prose h2 {
+  color: #f4f1ea;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 2.5rem 0 0.75rem;
+}
+.legal-prose h3 {
+  color: #f4f1ea;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  margin: 2rem 0 0.5rem;
+}
+.legal-prose p {
+  margin-bottom: 1.25rem;
+}
+.legal-prose ul,
+.legal-prose ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.legal-prose li {
+  margin-bottom: 0.375rem;
+}
+.legal-prose a {
+  color: #00afaa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legal-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+.legal-prose th,
+.legal-prose td {
+  padding: 8px 12px;
+  border: 1px solid rgba(244, 241, 234, 0.12);
+  font-size: 0.875rem;
+}
+.legal-prose th {
+  color: #f4f1ea;
+  background: rgba(244, 241, 234, 0.04);
+}
