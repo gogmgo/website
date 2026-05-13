@@ -78,7 +78,6 @@ export async function POST(req: Request) {
   } else {
     console.warn("[contact] HubSpot not configured - Portal:", !!settings.hubspotPortalId, "Form:", !!settings.hubspotFormId)
   }
-  }
 
   // ── Dev fallback: log to console ─────────────────────────────────────────
   console.log("[contact] Demo request (no HubSpot configured):", {
