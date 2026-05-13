@@ -64,13 +64,41 @@ export async function POST(req: Request) {
     })
 
     if (!hsRes.ok) {
-      const err = await hsRes.text()
-      console.error("[contact] HubSpot error:", hsRes.status, err)
+      const errText = await hsRes.text()
+      console.error("[contact] HubSpot error:", hsRes.status, errText)
       console.error("[contact] HubSpot payload:", JSON.stringify(hsPayload, null, 2))
       console.error("[contact] HubSpot settings - Portal:", settings.hubspotPortalId, "Form:", settings.hubspotFormId)
+      
+      // Try to parse HubSpot error response
+      let hsErrorMessage = "Submission failed"
+      try {
+        const hsError = JSON.parse(errText)
+        if (hsError.errors?.[0]?.message) {
+          hsErrorMessage = hsError.errors[0].message
+        } else if (hsError.message) {
+          hsErrorMessage = hsError.message
+        } else if (hsError.error) {
+          hsErrorMessage = hsError.error
+        }
+      } catch {
+        // If not JSON, use the text response or status-based message
+        if (hsRes.status === 400) {
+          hsErrorMessage = "Invalid form data. Please check your submission."
+        } else if (hsRes.status === 401 || hsRes.status === 403) {
+          hsErrorMessage = "Form submission is not configured correctly. Please contact support."
+        } else if (hsRes.status === 404) {
+          hsErrorMessage = "Form not found. Please contact support."
+        } else if (hsRes.status === 429) {
+          hsErrorMessage = "Too many requests. Please try again later."
+        } else if (errText) {
+          hsErrorMessage = errText.substring(0, 200) // Limit error message length
+        }
+      }
+      
       return NextResponse.json({ 
-        error: "Submission failed",
-        details: process.env.NODE_ENV === "development" ? err : undefined,
+        ok: false,
+        error: hsErrorMessage,
+        status: hsRes.status,
       }, { status: 502 })
     }
 

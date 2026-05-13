@@ -300,11 +300,20 @@ export function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       })
-      if (!res.ok) throw new Error("Submission failed")
+      
+      const data = await res.json()
+      
+      if (!res.ok) {
+        // Use error message from API response, fallback to generic message
+        const errorMsg = data?.error || "Submission failed. Please try again or email us directly."
+        throw new Error(errorMsg)
+      }
+      
       AnalyticsEvents.contactFormSubmit()
       setSubmitted(true)
-    } catch {
-      setSubmitError("Something went wrong. Please try again or email us directly.")
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again or email us directly."
+      setSubmitError(errorMessage)
     } finally {
       setLoading(false)
     }
