@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         { name: "company",      value: companyName },
         { name: "jobtitle",     value: jobTitle },
         { name: "website",      value: websiteUrl },
-        { name: "company_type", value: companyType },
+        { name: "company_category", value: companyType },
         { name: "num_outlets",  value: numOutlets },
         { name: "products_of_interest", value: productsOfInterest.join("; ") },
         { name: "message",      value: message },
