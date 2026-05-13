@@ -50,18 +50,18 @@ export async function POST(req: Request) {
     }
 
     // Send values under multiple compatible field names to match HubSpot internal naming.
-    addField(["firstname", "firstName"], firstName)
-    addField(["lastname", "lastName"], lastName)
-    addField(["email"], email)
-    addField(["phone"], phone)
-    addField(["company", "companyName"], companyName)
-    addField(["jobtitle", "jobTitle"], jobTitle)
-    addField(["website", "websiteUrl"], websiteUrl)
+    addField(["firstname", "firstName", "0-2/firstname"], firstName)
+    addField(["lastname", "lastName", "0-2/lastname"], lastName)
+    addField(["email", "0-2/email"], email)
+    addField(["phone", "0-2/phone"], phone)
+    addField(["company", "companyName", "0-2/company"], companyName)
+    addField(["jobtitle", "jobTitle", "0-2/jobtitle"], jobTitle)
+    addField(["website", "websiteUrl", "0-2/website"], websiteUrl)
     addField(["company_category", "companyType", "0-2/company_category"], companyType)
     addField(["number_of_outlets", "numOutlets", "0-2/number_of_outlets"], normalizedOutlets)
     addField(["products_of_interest", "productsOfInterest", "0-2/products_of_interest"], productsOfInterest.join("; "))
-    addField(["subject"], subject || "GoGMGo Demo Request")
-    addField(["content", "message"], message)
+    addField(["subject", "0-2/subject"], subject || "GoGMGo Demo Request")
+    addField(["content", "message", "0-2/content"], message)
 
     const hsPayload = {
       fields: hsFields,
