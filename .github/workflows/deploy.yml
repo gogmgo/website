@@ -7,27 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Generate & Build
-        run: |
-          npx prisma generate
-          npm run build
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
@@ -38,13 +22,18 @@ jobs:
           script: |
             cd /var/www/cafe.gogmgo.com
             
-            # Sync source
+            # Update source
             git fetch origin main
             git reset --hard origin/main
 
-            # Install prod-only deps
-            npm ci --omit=dev
+            # Fix Prisma provider
+            sed -i 's/provider = "sqlite"/provider = "postgresql"/g' prisma/schema.prisma
 
-            # Zero-downtime reload
+            # Build on server
+            npm install
+            npx prisma generate
+            npm run build
+
+            # Restart app
             pm2 reload cafe-gogmgo || pm2 start npm --name "cafe-gogmgo" -- start
             pm2 save
