@@ -1,0 +1,36 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/cafe.gogmgo.com
+            
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Fix Prisma provider for PostgreSQL
+            sed -i 's/provider = "sqlite"/provider = "postgresql"/g' prisma/schema.prisma
+
+            npm install
+            npx prisma generate
+            npm run build
+
+            pm2 reload cafe-gogmgo || pm2 start npm --name "cafe-gogmgo" -- start
+            pm2 save
