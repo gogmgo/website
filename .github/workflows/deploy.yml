@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -21,14 +22,15 @@ jobs:
           script: |
             cd /var/www/cafe.gogmgo.com
             
-            # Sync with GitHub
             git fetch origin main
             git reset --hard origin/main
 
-            # Install and Build
+            # Fix Prisma provider for PostgreSQL
+            sed -i 's/provider = "sqlite"/provider = "postgresql"/g' prisma/schema.prisma
+
             npm install
+            npx prisma generate
             npm run build
 
-            # Restart Application
             pm2 reload cafe-gogmgo || pm2 start npm --name "cafe-gogmgo" -- start
             pm2 save
