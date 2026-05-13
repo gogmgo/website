@@ -13,6 +13,7 @@ interface ContactPayload {
   numOutlets: string
   productsOfInterest: string[]
   message: string
+  subject?: string
 }
 
 export async function POST(req: Request) {
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
   }
 
   const { email, firstName, lastName, phone, companyName, jobTitle, websiteUrl,
-    companyType, numOutlets, productsOfInterest, message } = body
+    companyType, numOutlets, productsOfInterest, message, subject } = body
 
   if (!email || !firstName || !lastName) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -44,9 +45,10 @@ export async function POST(req: Request) {
         { name: "jobtitle",     value: jobTitle },
         { name: "website",      value: websiteUrl },
         { name: "company_category", value: companyType },
-        { name: "num_outlets",  value: numOutlets },
+        { name: "number_of_outlets", value: numOutlets },
         { name: "products_of_interest", value: productsOfInterest.join("; ") },
-        { name: "message",      value: message },
+        { name: "subject",      value: subject || "GoGMGo Demo Request" },
+        { name: "content",      value: message },
       ].filter((f) => f.value),
       context: {
         pageUri:  process.env.NEXTAUTH_URL ?? "https://gogmgo.com",
