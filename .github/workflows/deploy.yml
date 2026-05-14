@@ -20,7 +20,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/cafe.gogmgo.com
+            cd /var/www/gogmgo.com
             
             # Update source
             git fetch origin main
@@ -35,5 +35,5 @@ jobs:
             npm run build
 
             # Restart app
-            pm2 reload cafe-gogmgo || pm2 start npm --name "cafe-gogmgo" -- start
+            pm2 reload gogmgo || pm2 start npm --name "gogmgo" -- start
             pm2 save
