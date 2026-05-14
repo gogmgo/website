@@ -3,6 +3,7 @@ import { getSiteSettings } from "@/lib/settings"
 import { Navbar } from "@/components/sections/Navbar"
 import { Hero } from "@/components/sections/Hero"
 import { CafeEntrance } from "@/components/sections/CafeEntrance"
+import { ProofStrip } from "@/components/sections/ProofStrip"
 import { StepInside } from "@/components/sections/StepInside"
 import { KitchenPassage } from "@/components/sections/KitchenPassage"
 import { SecretSauce } from "@/components/sections/SecretSauce"
@@ -163,6 +164,7 @@ export default function Home() {
         <Navbar />
         <Hero />
         <CafeEntrance />
+        <ProofStrip />
         <StepInside />
         <KitchenPassage />
         <SecretSauce />

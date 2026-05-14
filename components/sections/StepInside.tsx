@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
 import Image from "next/image"
 import { motion, useScroll, useTransform, useReducedMotion, AnimatePresence } from "framer-motion"
@@ -14,48 +14,73 @@ const products = [
     name: "GoPOSGo",
     logo: "/brand/goposgo-logo.svg",
     logoW: 965, logoH: 230,
-    subheader: "Point of Sale System",
-    tagline: "Market-leading POS system designed specifically for F&B businesses with advanced features for order management and customer engagement.",
+    title: "Front-of-house, fully connected.",
+    outcomeHeadline: "Move faster. Sell smarter. Serve better.",
+    features: [
+      "Fast iPad POS",
+      "Table and cashier workflows",
+      "Menu and promotion controls",
+      "Printer and kitchen routing",
+      "Integrated payments",
+    ],
+    benefitBadges: [
+      "Faster table turnover",
+      "Higher average check potential",
+      "Reduced order errors",
+      "Better payment flow",
+    ],
+    supportingCopy: "Designed to improve speed of service, reduce operational friction and support smarter upselling at the point of sale.",
     accent: "#4A9EFF",
     screenshot: "/assets/goposgo.png",
     screenshotLayout: "portrait" as const,
     screenshotWide: true,
-    features: [
-      { label: "Order Management",    icon: ["M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2", "M9 5a2 2 0 012-2h2a2 2 0 012 2", "M9 12h6M9 16h4"] },
-      { label: "Payment Processing",  icon: ["M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"] },
-      { label: "Customer Management", icon: ["M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"] },
-      { label: "Real-time Analytics",  icon: ["M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"] },
-    ],
   },
   {
     id: "gohrgo",
     name: "GoHRGo",
     logo: "/brand/gohrgo-logo.svg",
     logoW: 883, logoH: 230,
-    subheader: "HR & People Management",
-    tagline: "Complete HR solution for managing staff scheduling, payroll, performance tracking, and employee engagement.",
-    accent: "#D4AF37",
+    title: "People operations without spreadsheet chaos.",
+    outcomeHeadline: "Schedule smarter. Reduce labour leakage.",
     features: [
-      { label: "Staff Scheduling",      icon: ["M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"] },
-      { label: "Payroll Management",    icon: ["M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"] },
-      { label: "Performance Tracking",  icon: ["M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"] },
-      { label: "Employee Self-Service", icon: ["M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"] },
+      "Staff profiles",
+      "Scheduling",
+      "Time clock and attendance",
+      "Leave and claims",
+      "Role-based workflows",
     ],
+    benefitBadges: [
+      "5–15% labour optimization potential",
+      "Reduced admin work",
+      "Better shift visibility",
+      "Faster approvals",
+    ],
+    supportingCopy: "Designed to help operators manage labour cost, scheduling and accountability without spreadsheet chaos.",
+    accent: "#D4AF37",
   },
   {
     id: "gochefgo",
     name: "GoChefGo",
     logo: "/brand/gochefgo-logo.svg",
     logoW: 1115, logoH: 230,
-    subheader: "Kitchen Management System",
-    tagline: "Streamline kitchen operations with recipe management, ingredient tracking, and production planning for optimal efficiency.",
-    accent: "#70C84A",
+    title: "Procurement, inventory and kitchen control.",
+    outcomeHeadline: "Reduce waste. Control margins. Automate procurement.",
     features: [
-      { label: "Trade Orders",          icon: ["M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"] },
-      { label: "Ingredients & Recipes", icon: ["M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"] },
-      { label: "Inventory Workflows",   icon: ["M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"] },
-      { label: "Waste Tracking",        icon: ["M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"] },
+      "Trade orders",
+      "Ingredients and recipes",
+      "Supplier workflows",
+      "Inventory and stock control",
+      "Waste and variance tracking",
+      "Scan-to-use procurement setup",
     ],
+    benefitBadges: [
+      "3–6% lower food cost potential",
+      "Better supplier visibility",
+      "Reduced wastage",
+      "Recipe-level costing",
+    ],
+    supportingCopy: "Turn supplier documents, invoices and menu data into structured operating intelligence.",
+    accent: "#70C84A",
     screenshot: "/assets/gochefgo.png",
     screenshotLayout: "portrait" as const,
   },
@@ -64,80 +89,109 @@ const products = [
     name: "Ordrr",
     logo: "/brand/ordrr-logo.svg",
     logoW: 735, logoH: 230,
-    subheader: "Online Ordering Platform",
-    tagline: "Complete online ordering solution with customizable storefronts, mobile apps, and delivery management capabilities.",
-    accent: "#8B5CF6",
+    title: "Digital ordering that belongs to your brand.",
+    outcomeHeadline: "More ordering channels. Less service friction.",
     features: [
-      { label: "QR Table Ordering",   icon: ["M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"] },
-      { label: "Online Ordering",     icon: ["M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"] },
-      { label: "Kiosk Workflows",     icon: ["M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"] },
-      { label: "Integrated Payments", icon: ["M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"] },
+      "QR ordering",
+      "Online ordering",
+      "Mobile server ordering",
+      "Kiosk workflows",
+      "Integrated payments",
     ],
+    benefitBadges: [
+      "Reduced wait-staff burden",
+      "Multi-channel ordering",
+      "Fewer order errors",
+      "Better guest convenience",
+    ],
+    supportingCopy: "Give guests more ways to order while keeping operations connected behind the scenes.",
+    accent: "#8B5CF6",
   },
   {
     id: "golinkgo",
     name: "GoLinkGo",
     logo: "/brand/golinkgo-logo.svg",
     logoW: 1015, logoH: 230,
-    subheader: "Integration Platform",
-    tagline: "Connect all your business systems and third-party applications with our powerful integration platform and API management.",
-    accent: "#E060B0",
+    title: "Connect the systems you already use.",
+    outcomeHeadline: "Less double entry. Fewer errors. More connected workflows.",
     features: [
-      { label: "Payment Integrations",   icon: ["M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"] },
-      { label: "Delivery Platforms",     icon: ["M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zM1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"] },
-      { label: "Reservation Systems",    icon: ["M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"] },
-      { label: "Accounting Connectors",  icon: ["M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"] },
+      "Payment integrations",
+      "Delivery integrations",
+      "Reservations",
+      "Accounting connectors",
+      "Loyalty links",
     ],
+    benefitBadges: [
+      "Reduced manual reconciliation",
+      "Labour hours saved weekly",
+      "Cleaner operational data",
+      "Fewer integration gaps",
+    ],
+    supportingCopy: "Connect the tools restaurants already rely on without turning operations into manual admin work.",
+    accent: "#E060B0",
   },
   {
     id: "godatago",
     name: "GoDataGo",
     logo: "/brand/godatago-logo.png",
     logoW: 1139, logoH: 244,
-    subheader: "Analytics & Reporting",
-    tagline: "Unlock the power of your data with AI-powered analytics.",
+    title: "Your restaurant data, finally useful.",
+    outcomeHeadline: "Turn restaurant data into decisions.",
+    features: [
+      "Sales analytics",
+      "Outlet dashboards",
+      "Cost dashboards",
+      "Cross-module reporting",
+      "Operator-friendly insights",
+    ],
+    benefitBadges: [
+      "Identify margin leaks",
+      "Track food cost",
+      "Compare outlets",
+      "Surface action items",
+    ],
+    supportingCopy: "GoGMGo helps operators see what needs attention — not just what already happened.",
     accent: "#00B1AE",
     screenshot: "/assets/godatago.png",
     screenshotLayout: "portrait" as const,
     screenshotWide: true,
-    features: [
-      { label: "Live Sales Analytics",   icon: ["M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"] },
-      { label: "Cost Dashboards",        icon: ["M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z", "M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"] },
-      { label: "Cross-module Reporting", icon: ["M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"] },
-      { label: "AI-surfaced Insights",   icon: ["M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"] },
-    ],
   },
 ]
 
 type Product = typeof products[number] & {
   screenshot?: string
   screenshotLayout?: "portrait"
-  screenshotWide?: boolean   // true = 460px col + tighter inset for landscape images
+  screenshotWide?: boolean
 }
 
-// ─── Feature icon ────────────────────────────────────────────────────────────
-function FeatureIcon({ paths, accent }: { paths: string[]; accent: string }) {
+// ─── Checkmark icon ──────────────────────────────────────────────────────────
+function CheckIcon({ accent }: { accent: string }) {
   return (
     <svg
-      width="18" height="18" viewBox="0 0 24 24"
-      fill="none" stroke={accent} strokeWidth="1.5"
-      strokeLinecap="round" strokeLinejoin="round"
-      style={{ flexShrink: 0, marginTop: "2px", opacity: 0.80 }}
+      width="13" height="13" viewBox="0 0 13 13" fill="none"
+      style={{ flexShrink: 0, marginTop: "3px" }}
     >
-      {paths.map((d, i) => <path key={i} d={d} />)}
+      <path
+        d="M2 6.5L5 9.5L11 3"
+        stroke={accent} strokeWidth="1.6"
+        strokeLinecap="round" strokeLinejoin="round"
+      />
     </svg>
   )
 }
 
 // ─── Modal ───────────────────────────────────────────────────────────────────
-function ProductModal({ product, onClose, onBookDemo }: { product: Product | null; onClose: () => void; onBookDemo: () => void }) {
+function ProductModal({ product, onClose, onBookDemo }: {
+  product: Product | null
+  onClose: () => void
+  onBookDemo: () => void
+}) {
   const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!product) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") { onClose(); return }
-      // Focus trap
       if (e.key === "Tab" && panelRef.current) {
         const focusable = panelRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -152,7 +206,6 @@ function ProductModal({ product, onClose, onBookDemo }: { product: Product | nul
     }
     document.addEventListener("keydown", onKey)
     document.body.style.overflow = "hidden"
-    // Move focus into modal
     const t = setTimeout(() => panelRef.current?.querySelector<HTMLElement>("button")?.focus(), 50)
     return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; clearTimeout(t) }
   }, [product, onClose])
@@ -165,7 +218,7 @@ function ProductModal({ product, onClose, onBookDemo }: { product: Product | nul
           <motion.div
             key="bd"
             className="fixed inset-0 z-50"
-            style={{ backgroundColor: "rgba(5,5,5,0.62)", backdropFilter: "blur(14px)" }}
+            style={{ backgroundColor: "rgba(5,5,5,0.65)", backdropFilter: "blur(16px)" }}
             variants={modalBackdrop} initial="hidden" animate="visible" exit="exit"
             onClick={onClose}
           />
@@ -185,54 +238,116 @@ function ProductModal({ product, onClose, onBookDemo }: { product: Product | nul
                   : "max-w-md lg:max-w-3xl"
               }`}
               style={{
-                background: "linear-gradient(165deg, rgba(32,24,14,0.96) 0%, rgba(24,18,10,0.96) 100%)",
+                background: "linear-gradient(165deg, rgba(32,24,14,0.97) 0%, rgba(22,16,9,0.97) 100%)",
                 borderRadius: "12px",
-                border: `1px solid ${product.accent}28`,
-                boxShadow: `0 0 0 0.5px ${product.accent}18, 0 32px 80px rgba(0,0,0,0.55)`,
+                border: `1px solid ${product.accent}24`,
+                boxShadow: `0 0 0 0.5px ${product.accent}14, 0 32px 80px rgba(0,0,0,0.60), 0 0 60px ${product.accent}08`,
                 maxHeight: "min(calc(100svh - 2rem), 90vh)",
               }}
               variants={modalPanel} initial="hidden" animate="visible" exit="exit"
             >
               {/* ── Atmospheric layers ── */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px z-10" style={{ background: `${product.accent}60` }} />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px z-10"
+                style={{ background: `linear-gradient(to right, transparent 10%, ${product.accent}55 40%, ${product.accent}55 60%, transparent 90%)` }}
+              />
               <div
                 className="pointer-events-none absolute inset-x-0 top-0 z-0"
-                style={{ height: "45%", background: `radial-gradient(ellipse 70% 80% at 35% 0%, ${product.accent}0d 0%, transparent 65%)` }}
+                style={{ height: "50%", background: `radial-gradient(ellipse 65% 75% at 30% 0%, ${product.accent}0b 0%, transparent 60%)` }}
               />
 
               {/* ── Body: content left, screenshot right ── */}
               <div className={`flex-1 flex flex-col min-h-0 ${product.screenshot ? "lg:flex-row lg:items-stretch" : ""}`}>
 
-                {/* Content column — scrollable on mobile so footer stays pinned */}
-                <div className="relative z-10 p-8 lg:p-10 flex flex-col lg:flex-1 overflow-y-auto">
-                  <div className="mb-3 flex items-center">
+                {/* Content column */}
+                <div className="relative z-10 p-7 lg:p-9 flex flex-col lg:flex-1 overflow-y-auto">
+
+                  {/* Logo */}
+                  <div className="mb-4 flex items-center">
                     <Image
                       src={product.logo}
                       alt={product.name}
                       width={product.logoW}
                       height={product.logoH}
                       unoptimized
-                      style={{ height: "34px", width: "auto", filter: `drop-shadow(0 0 6px ${product.accent}80)` }}
+                      style={{
+                        height: "30px", width: "auto",
+                        filter: `drop-shadow(0 0 8px ${product.accent}70)`,
+                      }}
                     />
                   </div>
+
+                  {/* Title label */}
                   <p
-                    id="product-modal-title"
-                    className="mb-4 text-base font-bold"
-                    style={{ color: product.accent, letterSpacing: "0.01em" }}
+                    className="mb-3"
+                    style={{
+                      color: `${product.accent}bb`,
+                      fontSize: "0.7rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.09em",
+                      textTransform: "uppercase",
+                    }}
                   >
-                    {product.name} — {product.subheader}
+                    {product.title}
                   </p>
-                  <p className="mb-5 text-base leading-relaxed" style={{ color: "rgba(244,241,234,0.74)", fontWeight: 500 }}>
-                    {product.tagline}
-                  </p>
-                  <ul className="space-y-3">
+
+                  {/* Outcome headline */}
+                  <h3
+                    id="product-modal-title"
+                    className="mb-5"
+                    style={{
+                      color: "#f4f1ea",
+                      fontSize: "clamp(1.15rem, 1.8vw, 1.4rem)",
+                      fontWeight: 600,
+                      lineHeight: 1.27,
+                      letterSpacing: "-0.018em",
+                    }}
+                  >
+                    {product.outcomeHeadline}
+                  </h3>
+
+                  {/* Feature bullets */}
+                  <ul className="space-y-2 mb-5">
                     {product.features.map((f) => (
-                      <li key={f.label} className="flex items-start gap-3">
-                        <FeatureIcon paths={f.icon} accent={product.accent} />
-                        <span className="text-base leading-relaxed" style={{ color: "rgba(244,241,234,0.84)", fontWeight: 500 }}>{f.label}</span>
+                      <li key={f} className="flex items-start gap-2.5">
+                        <CheckIcon accent={product.accent} />
+                        <span style={{ color: "rgba(244,241,234,0.76)", fontSize: "0.875rem", fontWeight: 500, lineHeight: 1.55 }}>
+                          {f}
+                        </span>
                       </li>
                     ))}
                   </ul>
+
+                  {/* Divider */}
+                  <div className="mb-4" style={{ height: "0.5px", background: "rgba(244,241,234,0.07)" }} />
+
+                  {/* Benefit badges */}
+                  <div className="flex flex-wrap gap-1.5 mb-5">
+                    {product.benefitBadges.map((badge) => (
+                      <span
+                        key={badge}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          padding: "4px 10px",
+                          borderRadius: "4px",
+                          border: `1px solid ${product.accent}20`,
+                          background: `${product.accent}0a`,
+                          color: "rgba(244,241,234,0.62)",
+                          fontSize: "0.71rem",
+                          fontWeight: 500,
+                          letterSpacing: "0.015em",
+                        }}
+                      >
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Supporting copy */}
+                  <p style={{ color: "rgba(184,181,173,0.55)", fontSize: "0.82rem", lineHeight: 1.65, fontWeight: 500 }}>
+                    {product.supportingCopy}
+                  </p>
+
                 </div>
 
                 {/* Screenshot — side column, desktop only */}
@@ -240,28 +355,24 @@ function ProductModal({ product, onClose, onBookDemo }: { product: Product | nul
                   <div
                     className="hidden lg:block relative overflow-hidden shrink-0"
                     style={{
-                      width:     product.screenshotWide ? "600px" : "420px",
-                      minHeight: product.screenshotWide ? "420px" : "540px",
+                      width:     product.screenshotWide ? "580px" : "400px",
+                      minHeight: product.screenshotWide ? "400px" : "520px",
                     }}
                   >
                     <div
                       className="pointer-events-none absolute inset-y-0 left-0 z-10 w-px"
-                      style={{ background: `${product.accent}20` }}
+                      style={{ background: `${product.accent}18` }}
                     />
                     <div
                       className="absolute"
-                      style={
-                        product.screenshotWide
-                          ? { inset: "12px 16px" }
-                          : { inset: "28px 32px" }
-                      }
+                      style={product.screenshotWide ? { inset: "12px 16px" } : { inset: "28px 32px" }}
                     >
                       <Image
                         src={product.screenshot}
                         alt={`${product.name} — product screenshot`}
                         fill
                         className="object-contain object-center"
-                        sizes={product.screenshotWide ? "600px" : "420px"}
+                        sizes={product.screenshotWide ? "580px" : "400px"}
                         quality={85}
                       />
                     </div>
@@ -270,15 +381,15 @@ function ProductModal({ product, onClose, onBookDemo }: { product: Product | nul
 
               </div>
 
-              {/* ── Footer: full-width, sits at the true bottom of the entire card ── */}
+              {/* ── Footer ── */}
               <div
-                className="relative z-10 flex items-center justify-between px-8 lg:px-10 py-5 shrink-0"
-                style={{ borderTop: `1px solid rgba(244,241,234,0.07)` }}
+                className="relative z-10 flex items-center justify-between px-7 lg:px-9 py-4 shrink-0"
+                style={{ borderTop: "1px solid rgba(244,241,234,0.07)" }}
               >
                 <button
                   type="button"
                   onClick={() => { onClose(); onBookDemo() }}
-                  className="inline-flex items-center justify-center rounded-lg px-6 py-2.5 text-sm font-semibold cursor-pointer"
+                  className="inline-flex items-center justify-center rounded-lg px-6 py-2.5 text-sm font-semibold cursor-pointer transition-opacity duration-200 hover:opacity-85"
                   style={{ backgroundColor: product.accent, color: "#050505", border: "none" }}
                 >
                   Book a Demo
@@ -286,11 +397,11 @@ function ProductModal({ product, onClose, onBookDemo }: { product: Product | nul
                 <button
                   type="button"
                   onClick={onClose}
-                  className="text-base font-medium"
+                  className="text-sm font-medium transition-colors duration-200"
                   aria-label="Close product details"
-                  style={{ color: "rgba(184,181,173,0.72)" }}
+                  style={{ color: "rgba(184,181,173,0.65)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#f4f1ea")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(184,181,173,0.72)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(184,181,173,0.65)")}
                 >
                   Close
                 </button>
@@ -308,31 +419,27 @@ function ProductModal({ product, onClose, onBookDemo }: { product: Product | nul
 export function StepInside() {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [modalProduct, setModalProduct] = useState<Product | null>(null)
-  const [mounted, setMounted] = useState(false)
   const { openModal } = useModal()
   const prefersReduced = useReducedMotion()
 
-  useEffect(() => { setMounted(true) }, [])
+  // useSyncExternalStore is the React 18+ way to detect client-side mounting for portals
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false)
 
   const sectionRef = useRef<HTMLElement>(null)
 
-  // Single full-lifecycle tracker: 0 = section top at viewport bottom, 0.5 = filling viewport, 1 = fully exited
   const { scrollYProgress: fullProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   })
 
-  // Subtle downward drift — only during exit phase
   const bgY = useTransform(fullProgress, [0.5, 1.0], [0, 65])
 
-  // Exit zoom toward the left kitchen passage — mirrors Hero's acceleration curve
   const bgScale = useTransform(
     fullProgress,
     [0,   0.11, 0.50, 0.575, 0.725, 0.86, 1.00],
     [1.0, 1.0,  1.0,  1.06,  1.14,  1.28, 1.46]
   )
 
-  // Blur: clears fast on entry (8→0 in first ~22vh), builds on exit (0→15 matching Hero pacing)
   const bgBlurNum = useTransform(
     fullProgress,
     [0,   0.11, 0.50, 0.790, 0.875, 0.950, 1.00],
@@ -393,8 +500,6 @@ export function StepInside() {
       />
 
       {/* ── DESKTOP: logo LED grid over the blank wall ── */}
-      {/* justify-start so logos left-align to the container edge (not centered within it).
-          Left position pulls far enough that GoPOSGo/Ordrr sit in the left-centre zone. */}
       <div
         className="absolute hidden lg:flex items-center justify-start lg:left-[36%] xl:left-[40%] 2xl:left-[44%] right-[2%]"
         style={{ top: "8vh", bottom: "36vh" }}
@@ -517,7 +622,7 @@ export function StepInside() {
         </div>
       </div>
 
-      {/* ── Crawlable product descriptions — invisible to sighted users ── */}
+      {/* ── Crawlable product descriptions ── */}
       <div className="sr-only">
         <h2>GoGMGo Restaurant Operating System — Products and Features</h2>
         <p>
