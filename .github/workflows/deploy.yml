@@ -8,32 +8,24 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
       - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/gogmgo.com
-            
-            # Update source
-            git fetch origin main
-            git reset --hard origin/main
+        run: |
+          cd /var/www/gogmgo.com
 
-            # Fix Prisma provider
-            sed -i 's/provider = "sqlite"/provider = "postgresql"/g' prisma/schema.prisma
+          # Update source
+          git fetch origin main
+          git reset --hard origin/main
 
-            # Build on server
-            npm install
-            npx prisma generate
-            npm run build
+          # Fix Prisma provider
+          sed -i 's/provider = "sqlite"/provider = "postgresql"/g' prisma/schema.prisma
 
-            # Restart app
-            pm2 reload gogmgo || pm2 start npm --name "gogmgo" -- start
-            pm2 save
+          # Build on server
+          npm install
+          npx prisma generate
+          npm run build
+
+          # Restart app
+          pm2 reload gogmgo || pm2 start npm --name "gogmgo" -- start
+          pm2 save
